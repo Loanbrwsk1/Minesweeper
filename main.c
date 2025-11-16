@@ -187,6 +187,9 @@ void game(void)
             if(verifyWin(game, &nb_mines) == 1){
                 break;
             }
+            else{
+                printf("\x1b[33;1mYou have not find all the mines !\x1b[0m\n");
+            }
         }
 
         if((row < 0 || row > LENGHT - 1 || column < 0 || column > LENGHT - 1) && !is_occuped){
