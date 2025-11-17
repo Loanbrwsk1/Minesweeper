@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define LENGHT 10
+#define LENGHT 20
 #define ONE_MINE "\x1b[34;1m1\x1b[0m"
 #define TWO_MINE "\x1b[32;1m2\x1b[0m"
 #define THREE_MINE "\x1b[31;1m3\x1b[0m"
@@ -77,7 +77,7 @@ void printGame(int game[LENGHT][LENGHT])
 
 int initMines(int game[LENGHT][LENGHT])
 {
-    int i, nb_mine = rand() % 6 + 4;
+    int i, nb_mine = rand() % 25 + 25;
 
     for(i = 0 ; i < nb_mine ; i++){
         game[rand() % LENGHT][rand() % LENGHT] = -50;
@@ -133,19 +133,23 @@ void cascade(int game[LENGHT][LENGHT], int row, int column)
 
 int verifyWin(int game[LENGHT][LENGHT], int *nb_mines)
 {
-    int win = 0, i, j;
+    int nb_flags = 0, nb_broken_block = 0, i, j;
 
     for(i = 0 ; i < LENGHT ; i++){
         for(j = 0 ; j < LENGHT ; j++){
             if(game[i][j] == 60){
-                win++;
+                nb_flags++;
+            }
+            if(game[i][j] < 0 && game[i][j] != -50){
+                nb_broken_block++;
             }
         }
     }
-    if(win == *nb_mines){
+    if(nb_flags == *nb_mines || nb_broken_block == 0){
         printf("\x1b[32;1mYou win !\x1b[0m\n");
         return 1;
     }
+    printf("\x1b[33;1mYou have not find all the mines !\x1b[0m\n");
     return 0;
 }
 
@@ -166,8 +170,8 @@ void game(void)
     while (1){
         printf("Remaining flags : %d\n", nb_flags_available);
         printf("Break (1), Flag (2) or Verify (3) : ");
+        scanf("%d", &action);
         if(action != 3){
-            scanf("%d", &action);
             printf("Row : ");
             scanf("%d", &row);
             printf("Column : ");
@@ -183,12 +187,12 @@ void game(void)
             printf("\x1b[31;1mAction not recognized !\x1b[0m\n");
         }
 
-        if(action == 3){
+        if(action == 3 && !is_occuped){
             if(verifyWin(game, &nb_mines) == 1){
                 break;
             }
             else{
-                printf("\x1b[33;1mYou have not find all the mines !\x1b[0m\n");
+                is_occuped = 1;
             }
         }
 
@@ -235,7 +239,7 @@ void game(void)
             if(game[row][column] == 50 && action == 1){
                 for(i = 0 ; i < LENGHT ; i++){
                     for(j = 0 ; j < LENGHT ; j++){
-                        if(game[i][j] == -50){
+                        if(game[i][j] == -50 || game[i][j] == 60){
                             game[i][j] *= -1;
                         }
                     }
