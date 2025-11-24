@@ -80,7 +80,9 @@ int initMines(int game[LENGHT][LENGHT])
     int i, nb_mine = rand() % 25 + 25;
 
     for(i = 0 ; i < nb_mine ; i++){
-        game[rand() % LENGHT][rand() % LENGHT] = -50;
+        int x = rand() % LENGHT, y = rand() % LENGHT;
+        if(game[x][y] != -50)
+            game[x][y] = -50;
     }
 
     return nb_mine;
